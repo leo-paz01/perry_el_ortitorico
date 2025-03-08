@@ -42,6 +42,12 @@ coordenada_t generar_posicion_aleatoria() {
   return coordenada;
 }
 
+bool limites_terreno(coordenada_t coordenada_elemento) {
+  return (coordenada_elemento.col < MAX_COLUMNAS &&
+          coordenada_elemento.col >= 0 && coordenada_elemento.fil < MAX_FILAS &&
+          coordenada_elemento.fil >= 0);
+}
+
 void inicializar_perry(juego_t *juego) {
   juego->perry.posicion = generar_posicion_aleatoria();
   juego->perry.camuflado = false;
@@ -115,33 +121,34 @@ char imprimir_perry(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
   return terreno[juego->perry.posicion.fil][juego->perry.posicion.col];
 }
 
-void imprimir_bombas(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
-  for (int i = 0; i < juego->tope_bombas; i++) {
-    terreno[juego->bombas[i].posicion.fil][juego->bombas[i].posicion.col] =
-        BOMBAS;
-  }
-}
-
-void imprimi_familiares(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
-  for (int i = 0; i < juego->tope_familiares; i++) {
-    terreno[juego->familiares[i].posicion.fil]
-           [juego->familiares[i].posicion.col] =
-               juego->familiares[i].inicial_nombre;
-  }
-}
-
-void imprimir_herramientas(juego_t *juego,
-                           char terreno[MAX_FILAS][MAX_COLUMNAS]) {
-  for (int i = 0; i < juego->tope_herramientas; i++) {
-    if (i < CANT_SOMBREROS) {
-      terreno[juego->herramientas[i].posicion.fil]
-             [juego->herramientas[i].posicion.col] = SOMBREROS;
-    } else {
-      terreno[juego->herramientas[i].posicion.fil]
-             [juego->herramientas[i].posicion.col] = GOLOSINAS;
-    }
-  }
-}
+// void imprimir_bombas(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
+//   for (int i = 0; i < juego->tope_bombas; i++) {
+//     terreno[juego->bombas[i].posicion.fil][juego->bombas[i].posicion.col] =
+//         BOMBAS;
+//   }
+// }
+//
+// void imprimi_familiares(juego_t *juego, char
+// terreno[MAX_FILAS][MAX_COLUMNAS]) {
+//   for (int i = 0; i < juego->tope_familiares; i++) {
+//     terreno[juego->familiares[i].posicion.fil]
+//            [juego->familiares[i].posicion.col] =
+//                juego->familiares[i].inicial_nombre;
+//   }
+// }
+//
+// void imprimir_herramientas(juego_t *juego,
+//                            char terreno[MAX_FILAS][MAX_COLUMNAS]) {
+//   for (int i = 0; i < juego->tope_herramientas; i++) {
+//     if (i < CANT_SOMBREROS) {
+//       terreno[juego->herramientas[i].posicion.fil]
+//              [juego->herramientas[i].posicion.col] = SOMBREROS;
+//     } else {
+//       terreno[juego->herramientas[i].posicion.fil]
+//              [juego->herramientas[i].posicion.col] = GOLOSINAS;
+//     }
+//   }
+// }
 
 void imprimir_terreno(juego_t juego) {
   char terreno[MAX_FILAS][MAX_COLUMNAS];
@@ -150,9 +157,11 @@ void imprimir_terreno(juego_t juego) {
     for (int j = 0; j < MAX_COLUMNAS; j++) {
       terreno[i][j] = ' ';
     }
+    if (limites_terreno(juego.perry.posicion)) {
+      terreno[juego.perry.posicion.fil][juego.perry.posicion.col] = PERRY;
+    }
   }
 
-  imprimir_perry(&juego, terreno);
   for (int i = 0; i < MAX_FILAS; i++) {
     for (int j = 0; j < MAX_COLUMNAS; j++) {
       printf("|%c", terreno[i][j]);
