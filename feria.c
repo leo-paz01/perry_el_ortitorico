@@ -22,7 +22,7 @@ const char FERB = 'F';
 // Objetos
 
 const char BOMBAS = 'B';
-const int CANT_BOMBAS = 3;
+const int CANT_BOMBAS = 10;
 const char GOLOSINAS = 'G';
 const int CANT_GOLOSINAS = 5;
 const char SOMBREROS = 'S';
@@ -69,7 +69,8 @@ void inicializar_herramientas(juego_t *juego) {
     if (i < CANT_GOLOSINAS) {
       juego->herramientas[i].posicion = generar_posicion_aleatoria();
       juego->herramientas[i].tipo = GOLOSINAS;
-    } else {
+    }
+    if (i < CANT_SOMBREROS) {
       juego->herramientas[i].posicion = generar_posicion_aleatoria();
       juego->herramientas[i].tipo = SOMBREROS;
     }
@@ -119,40 +120,39 @@ void cargar_perry(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
   }
 }
 
-// void cargar_bombas(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
-//   for (int i = 0; i < CANT_BOMBAS; i++) {
-//     if (limites_terreno(juego->bombas[i].posicion)) {
-//       terreno[juego->bombas[i].posicion.fil][juego->bombas[i].posicion.col] =
-//           BOMBAS;
-//     }
-//   }
-// }
+void cargar_bombas(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
+  for (int i = 0; i < CANT_BOMBAS; i++) {
+    if (limites_terreno(juego->bombas[i].posicion)) {
+      terreno[juego->bombas[i].posicion.fil][juego->bombas[i].posicion.col] =
+          BOMBAS;
+    }
+  }
+}
 
-// void cargar_familiares(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS])
-// {
-//   for (int i = 0; i < juego->tope_familiares; i++) {
-//     if (limites_terreno(juego->familiares[i].posicion)) {
-//       terreno[juego->familiares[i].posicion.fil]
-//              [juego->familiares[i].posicion.col] =
-//                  juego->familiares[i].inicial_nombre;
-//     }
-//   }
-// }
-//
-// void cargar_herramientas(juego_t *juego,
-//                          char terreno[MAX_FILAS][MAX_COLUMNAS]) {
-//   for (int i = 0; i < juego->tope_herramientas; i++) {
-//     if (limites_terreno(juego->herramientas[i].posicion)) {
-//       if (i < CANT_SOMBREROS) {
-//         terreno[juego->herramientas[i].posicion.fil]
-//                [juego->herramientas[i].posicion.col] = SOMBREROS;
-//       } else {
-//         terreno[juego->herramientas[i].posicion.fil]
-//                [juego->herramientas[i].posicion.col] = GOLOSINAS;
-//       }
-//     }
-//   }
-// }
+void cargar_familiares(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
+  for (int i = 0; i < juego->tope_familiares; i++) {
+    if (limites_terreno(juego->familiares[i].posicion)) {
+      terreno[juego->familiares[i].posicion.fil]
+             [juego->familiares[i].posicion.col] =
+                 juego->familiares[i].inicial_nombre;
+    }
+  }
+}
+
+void cargar_herramientas(juego_t *juego,
+                         char terreno[MAX_FILAS][MAX_COLUMNAS]) {
+  for (int i = 0; i < juego->tope_herramientas; i++) {
+    if (limites_terreno(juego->herramientas[i].posicion)) {
+      if (i < CANT_SOMBREROS) {
+        terreno[juego->herramientas[i].posicion.fil]
+               [juego->herramientas[i].posicion.col] = SOMBREROS;
+      } else {
+        terreno[juego->herramientas[i].posicion.fil]
+               [juego->herramientas[i].posicion.col] = GOLOSINAS;
+      }
+    }
+  }
+}
 
 void imprimir_terreno(juego_t juego) {
 
@@ -162,6 +162,9 @@ void imprimir_terreno(juego_t juego) {
     for (int j = 0; j < MAX_COLUMNAS; j++) {
       terreno[i][j] = ' ';
       cargar_perry(&juego, terreno);
+      cargar_bombas(&juego, terreno);
+      cargar_herramientas(&juego, terreno);
+      cargar_familiares(&juego, terreno);
     }
   }
 
