@@ -33,8 +33,6 @@ const int MAX_FILAS = 20;
 const int MAX_COLUMNAS = 20;
 
 coordenada_t generar_posicion_aleatoria() {
-  srand((unsigned)time(NULL));
-
   coordenada_t coordenada;
   coordenada.fil = rand() % MAX_FILAS;
   coordenada.col = rand() % MAX_COLUMNAS;
@@ -42,10 +40,9 @@ coordenada_t generar_posicion_aleatoria() {
   return coordenada;
 }
 
-bool limites_terreno(coordenada_t coordenada_elemento) {
-  return (coordenada_elemento.col < MAX_COLUMNAS &&
-          coordenada_elemento.col >= 0 && coordenada_elemento.fil < MAX_FILAS &&
-          coordenada_elemento.fil >= 0);
+bool limites_terreno(coordenada_t coordenada) {
+  return (coordenada.col < MAX_COLUMNAS && coordenada.col >= 0 &&
+          coordenada.fil < MAX_FILAS && coordenada.fil >= 0);
 }
 
 void inicializar_perry(juego_t *juego) {
@@ -96,25 +93,25 @@ void inicializar_juego(juego_t *juego) {
   inicializar_bombas(juego);
 }
 
-void realizar_jugada(juego_t *juego, char accion) {
-
-  coordenada_t posicion_actual = juego->perry.posicion;
-  if (accion == ARRIBA) {
-    posicion_actual.col++;
-  } else if (accion == ABAJO) {
-    posicion_actual.col--;
-  } else if (accion == DERECHA) {
-    posicion_actual.fil++;
-  } else if (accion == IZQUIERDA) {
-    posicion_actual.fil--;
-  } else if (accion == CAMUFLAJE) {
-    if (!juego->perry.camuflado) {
-      juego->perry.camuflado = true;
-    }
-  } else {
-    printf("Jugada invalida");
-  }
-}
+// void realizar_jugada(juego_t *juego, char accion) {
+//
+//   coordenada_t posicion_actual = juego->perry.posicion;
+//   if (accion == ARRIBA) {
+//     posicion_actual.col++;
+//   } else if (accion == ABAJO) {
+//     posicion_actual.col--;
+//   } else if (accion == DERECHA) {
+//     posicion_actual.fil++;
+//   } else if (accion == IZQUIERDA) {
+//     posicion_actual.fil--;
+//   } else if (accion == CAMUFLAJE) {
+//     if (!juego->perry.camuflado) {
+//       juego->perry.camuflado = true;
+//     }
+//   } else {
+//     printf("Jugada invalida");
+//   }
+// }
 
 void cargar_perry(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
   if (limites_terreno(juego->perry.posicion)) {
@@ -122,14 +119,14 @@ void cargar_perry(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
   }
 }
 
-void cargar_bombas(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
-  for (int i = 0; i < CANT_BOMBAS; i++) {
-    if (limites_terreno(juego->bombas[i].posicion)) {
-      terreno[juego->bombas[i].posicion.fil][juego->bombas[i].posicion.col] =
-          BOMBAS;
-    }
-  }
-}
+// void cargar_bombas(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
+//   for (int i = 0; i < CANT_BOMBAS; i++) {
+//     if (limites_terreno(juego->bombas[i].posicion)) {
+//       terreno[juego->bombas[i].posicion.fil][juego->bombas[i].posicion.col] =
+//           BOMBAS;
+//     }
+//   }
+// }
 
 // void cargar_familiares(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS])
 // {
@@ -165,9 +162,6 @@ void imprimir_terreno(juego_t juego) {
     for (int j = 0; j < MAX_COLUMNAS; j++) {
       terreno[i][j] = ' ';
       cargar_perry(&juego, terreno);
-      cargar_bombas(&juego, terreno);
-      //     cargar_herramientas(&juego, terreno);
-      //     cargar_familiares(&juego, terreno);
     }
   }
 
@@ -180,6 +174,8 @@ void imprimir_terreno(juego_t juego) {
 }
 
 int main() {
+  srand((unsigned)time(NULL));
   juego_t juego;
+  inicializar_juego(&juego);
   imprimir_terreno(juego);
 }
