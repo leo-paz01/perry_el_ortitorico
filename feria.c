@@ -94,26 +94,6 @@ void inicializar_juego(juego_t *juego) {
   inicializar_bombas(juego);
 }
 
-// void realizar_jugada(juego_t *juego, char accion) {
-//
-//   coordenada_t posicion_actual = juego->perry.posicion;
-//   if (accion == ARRIBA) {
-//     posicion_actual.col++;
-//   } else if (accion == ABAJO) {
-//     posicion_actual.col--;
-//   } else if (accion == DERECHA) {
-//     posicion_actual.fil++;
-//   } else if (accion == IZQUIERDA) {
-//     posicion_actual.fil--;
-//   } else if (accion == CAMUFLAJE) {
-//     if (!juego->perry.camuflado) {
-//       juego->perry.camuflado = true;
-//     }
-//   } else {
-//     printf("Jugada invalida");
-//   }
-// }
-
 void cargar_perry(juego_t *juego, char terreno[MAX_FILAS][MAX_COLUMNAS]) {
   if (limites_terreno(juego->perry.posicion)) {
     terreno[juego->perry.posicion.fil][juego->perry.posicion.col] = PERRY;
@@ -146,10 +126,29 @@ void cargar_herramientas(juego_t *juego,
       if (i < CANT_SOMBREROS) {
         terreno[juego->herramientas[i].posicion.fil]
                [juego->herramientas[i].posicion.col] = SOMBREROS;
-      } else {
+      }
+      if (i < CANT_GOLOSINAS) {
         terreno[juego->herramientas[i].posicion.fil]
                [juego->herramientas[i].posicion.col] = GOLOSINAS;
       }
+    }
+  }
+}
+
+void realizar_jugada(juego_t *juego, char accion) {
+
+  coordenada_t posicion_actual = juego->perry.posicion;
+  if (accion == ARRIBA) {
+    posicion_actual.col++;
+  } else if (accion == ABAJO) {
+    posicion_actual.col--;
+  } else if (accion == DERECHA) {
+    posicion_actual.fil++;
+  } else if (accion == IZQUIERDA) {
+    posicion_actual.fil--;
+  } else if (accion == CAMUFLAJE) {
+    if (!juego->perry.camuflado) {
+      juego->perry.camuflado = true;
     }
   }
 }
@@ -167,18 +166,10 @@ void imprimir_terreno(juego_t juego) {
       cargar_familiares(&juego, terreno);
     }
   }
-
   for (int i = 0; i < MAX_FILAS; i++) {
     for (int j = 0; j < MAX_COLUMNAS; j++) {
       printf("|%c", terreno[i][j]);
     }
     printf("\n");
   }
-}
-
-int main() {
-  srand((unsigned)time(NULL));
-  juego_t juego;
-  inicializar_juego(&juego);
-  imprimir_terreno(juego);
 }
